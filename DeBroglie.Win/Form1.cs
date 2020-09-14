@@ -76,8 +76,7 @@ namespace DeBroglie.Win
 
                     }));
 
-                }
-                    );
+                });
 
                 
 
@@ -107,11 +106,6 @@ namespace DeBroglie.Win
             //pictureBox1.Image = Image.FromFile(pro.Dest);
 
         }
-        private void WriteTextSafe(string text)
-        {
-           
-        }
-
         private void pictureBox2_Click(object sender, EventArgs e)
         {
 
@@ -147,10 +141,8 @@ namespace DeBroglie.Win
 
         }
 
-        Rectangle Rect = new Rectangle();
-        System.Drawing.Point mDown2;
         System.Drawing.Point mDown1;
-        System.Drawing.Point mCurr;
+        System.Drawing.Point mDown2;
         private void pictureBox2_MouseMove(object sender, MouseEventArgs e)
         {
             //MouseEventArgs me = (MouseEventArgs)e;
@@ -189,6 +181,18 @@ namespace DeBroglie.Win
 
             Rectangle r = new Rectangle(mDown1.X, mDown1.Y, 16, 16);
             e.Graphics.DrawRectangle(Pens.Red, r);
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+            MouseEventArgs me = (MouseEventArgs)e;
+            var pos = me.Location;
+
+            pos.X -= pos.X % 16;
+            pos.Y -= pos.Y % 16;
+
+
+
         }
     }
 }
