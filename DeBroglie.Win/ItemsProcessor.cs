@@ -138,7 +138,7 @@ namespace DeBroglie.Win
             }
         }
 
-        SampleSet SampleSet;
+        public SampleSet SampleSet;
 
         public void ProcessItem()
         {
@@ -154,7 +154,6 @@ namespace DeBroglie.Win
 
             // TODO: Neat way to do this without mutability?
             factory.TilesByName = new Dictionary<string, Tile>();
-
             
             if (config.SrcType == SrcType.Sample)
             {
@@ -183,7 +182,7 @@ namespace DeBroglie.Win
         }
 
 
-        public void Run()
+        internal void Run2(Action<string> action)
         {
             Resolution status = Propagator.Status;
 
@@ -198,9 +197,10 @@ namespace DeBroglie.Win
                     System.Console.WriteLine($"Found contradiction in initial conditions, retrying");
                     continue;
                 }
-                if (config.Animate)
+                //if (config.Animate)
+                if (true)
                 {
-                    status = RunAnimate(Model, Propagator, Dest, SampleSet.ExportOptions);
+                    status = RunAnimate(Model, Propagator, Dest, SampleSet.ExportOptions, action);
                 }
                 else
                 {
@@ -228,12 +228,57 @@ namespace DeBroglie.Win
             }
         }
 
-        private Resolution RunAnimate(TileModel model, TilePropagator propagator, string dest, ExportOptions exportOptions)
+        public void Run()
         {
-            if (!config.Animate)
-            {
-                return Run(propagator);
-            }
+            //Resolution status = Propagator.Status;
+
+            //for (var retry = 0; retry < 5; retry++)
+            //{
+            //    if (retry != 0)
+            //    {
+            //        status = Propagator.Clear();
+            //    }
+            //    if (status == Resolution.Contradiction)
+            //    {
+            //        System.Console.WriteLine($"Found contradiction in initial conditions, retrying");
+            //        continue;
+            //    }
+            //    if (config.Animate)
+            //    {
+            //        status = RunAnimate(Model, Propagator, Dest, SampleSet.ExportOptions);
+            //    }
+            //    else
+            //    {
+            //        status = Run(Propagator);
+            //    }
+            //    if (status == Resolution.Contradiction)
+            //    {
+            //        System.Console.WriteLine($"Found contradiction, retrying");
+            //        continue;
+            //    }
+            //    break;
+            //}
+            //Directory.CreateDirectory(Path.GetDirectoryName(Dest));
+            //if (status == Resolution.Decided)
+            //{
+            //    System.Console.WriteLine($"Writing {Dest}");
+            //    Exporter.Export(Model, Propagator, Dest, config, SampleSet.ExportOptions);
+            //    File.Delete(Contdest);
+            //}
+            //else
+            //{
+            //    System.Console.WriteLine($"Writing {Contdest}");
+            //    Exporter.Export(Model, Propagator, Contdest, config, SampleSet.ExportOptions);
+            //    File.Delete(Dest);
+            //}
+        }
+
+        private Resolution RunAnimate(TileModel model, TilePropagator propagator, string dest, ExportOptions exportOptions, Action<string> action)
+        {
+            //if (!config.Animate)
+            //{
+            //    return Run(propagator);
+            //}
             // Animate is true - we run the propagator, and export after every step
             Resolution status = Resolution.Undecided;
             var allFiles = new List<string>();
@@ -245,6 +290,9 @@ namespace DeBroglie.Win
                 var currentDest = Path.ChangeExtension(dest, i + Path.GetExtension(dest));
                 allFiles.Add(currentDest);
                 Exporter.Export(model, propagator, currentDest, config, exportOptions);
+
+                action(currentDest);
+
                 i++;
                 if (status != Resolution.Undecided) return status;
             }
@@ -311,9 +359,5 @@ namespace DeBroglie.Win
             //processor.ProcessItem();
         }
 
-        internal void Run2(Action<string> p)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
