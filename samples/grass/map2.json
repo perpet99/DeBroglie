@@ -1,7 +1,7 @@
 {
     "$schema": "./schema.json",
     "src": "map.tmx",
-    "dest": "output/output.tmx",
+    "dest": "output/output.png",
     "symmetry": 8,
     "model": {
         "type": "adjacent"
@@ -29,8 +29,8 @@
             "tiles": [6,7,8,17,18,19,20,29,30,31,32,41,42,43,44]
         }
     ],
-    "width": 20,
-    "height": 20,
+    "width": 5,
+    "height": 5,
     "periodic": false,
     "backtrack": true,
     "animate": false
