@@ -166,7 +166,7 @@ namespace DeBroglie.Wfc
 
         // Returns the only possible value of a cell if there is only one,
         // otherwise returns -1 (multiple possible) or -2 (none possible)
-        private int GetDecidedCell(int index)
+        public int GetDecidedCell(int index)
         {
             int decidedPattern = (int)Resolution.Contradiction;
             for (var pattern = 0; pattern < patternCount; pattern++)

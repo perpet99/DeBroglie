@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -13,6 +14,19 @@ using DeBroglie.Console.Export;
 
 namespace DeBroglie.Win
 {
+
+    //public static class Util
+    //{
+    //    public static Stream ToStream(this Image image, ImageFormat format)
+    //    {
+    //        var stream = new System.IO.MemoryStream();
+    //        image.Save(stream, format);
+    //        stream.Position = 0;
+    //        return stream;
+    //    }
+
+    //}
+
     public partial class Form1 : Form
     {
 
@@ -38,7 +52,7 @@ namespace DeBroglie.Win
             {
                 var basePath = Path.GetDirectoryName(teo.SrcFileName);
 
-                pictureBox2.Image = Image.FromFile(Path.Combine(basePath, teo.Template.Tilesets[0].ImagePath));
+                pictureBox2.Image = FromImage(Path.Combine(basePath, teo.Template.Tilesets[0].ImagePath));
             }
 
         }
@@ -71,7 +85,7 @@ namespace DeBroglie.Win
                     BeginInvoke((Action)(() =>
                     {
                         //button1.Text = path;
-                        pictureBox1.Image = Image.FromFile(path);
+                        pictureBox1.Image = FromImage(path);
                         pictureBox1.Update();
 
                     }));
@@ -106,6 +120,8 @@ namespace DeBroglie.Win
             //pictureBox1.Image = Image.FromFile(pro.Dest);
 
         }
+
+        int SelectedPatten = 0;
         private void pictureBox2_Click(object sender, EventArgs e)
         {
 
@@ -113,8 +129,15 @@ namespace DeBroglie.Win
             MouseEventArgs me = (MouseEventArgs)e;
             var pos = me.Location;
 
+            SelectedPatten = pos.X / 16 + (pos.Y / 16) * 12;
+
+            SelectedPatten++;
+
             pos.X -= pos.X % 16;
             pos.Y -= pos.Y % 16;
+
+
+            
 
             //float stretch1X = 1f * pictureBox1.Image.Width / pictureBox1.ClientSize.Width;
             //float stretch1Y = 1f * pictureBox1.Image.Height / pictureBox1.ClientSize.Height;
@@ -123,7 +146,7 @@ namespace DeBroglie.Win
             //Size sz = new Size((int)((mCurr.X - mDown.X) * stretch1X),
             //                   (int)((mCurr.Y - mDown.Y) * stretch1Y));
 
-            
+
 
             Rectangle rSrc = new Rectangle(pos, new Size(16,16));
             Rectangle rDest = new Rectangle(System.Drawing.Point.Empty, new Size(pictureBox3.ClientSize.Width, pictureBox3.ClientSize.Height));
@@ -191,8 +214,84 @@ namespace DeBroglie.Win
             pos.X -= pos.X % 16;
             pos.Y -= pos.Y % 16;
 
+            int x = pos.X / 16;
+            int y = pos.Y / 16;
+
+            //Pro.Propagator.SeletctPattern(x + y * 20, 1);
+
+            //Pro.Export("test.png");
+
+            //pictureBox1.Image = FromImage("test.png");
+            //pictureBox1.Update();
+
+
+
+            var pro = ItemsProcessor.Process("grass/map2.json");
+
+            pro.ProcessItem();
+
+
+            //pro.Propagator.Select()
+            pro.Propagator.Select(2 , 2 , 0 ,new Tile( SelectedPatten));
+
+            for (int sy = 0; sy < 5; sy++)
+            {
+                for (int sx = 0; sx < 5; sx++)
+                {
+                    if (sx == 0 || sx == 4 || sy == 0 || sy == 4)
+                    {
+                        int i = sx + x - 2 + (sy + y - 2) * 20;
+
+                        var pattern = Pro.Propagator.GetDecidedCell(i);
+                        //pro.Propagator.SeletctPattern(sx + sy * 5, pattern);
+                        pro.Propagator.Select(sx, sy, 0, new Tile(pattern));
+
+                    }
+                    else if (sx == 2 && sy == 2)
+                    {
+                        
+                    }
+                    else
+                    {
+                        //model.Clear(sx, sy);
+                    }
+                }
+            }
+
+            pro.Run2((String path) =>
+
+            {
+                pictureBox4.Image = FromImage(path);
+                pictureBox4.Update();
+
+
+                //BeginInvoke((Action)(() =>
+                //{
+                //    //button1.Text = path;
+
+                //}));
+
+            });
+
 
 
         }
+        private void button2_Click(object sender, EventArgs e)
+        {
+            
+        }
+
+        public static Image FromImage(string path)
+        {
+            MemoryStream ms = new MemoryStream();
+            using (var i = File.OpenRead(path))
+            {
+                i.CopyTo(ms);
+            }
+            return Image.FromStream(ms);
+        }
+
     }
+
+
 }

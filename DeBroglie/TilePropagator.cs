@@ -665,5 +665,17 @@ namespace DeBroglie
                 return (ISet<T>)hs;
             }, topology);
         }
+
+        public void SeletctPattern(int index,int pattern)
+        {
+            //wavePropagator.Wave.AddPossibility(index, pattern);
+            wavePropagator.InternalSelect(index, pattern);
+        }
+
+        public int GetDecidedCell(int index)
+        {
+            return wavePropagator.GetDecidedCell(index);
+        }
+
     }
 }

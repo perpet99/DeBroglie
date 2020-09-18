@@ -228,6 +228,10 @@ namespace DeBroglie.Win
             }
         }
 
+        public void Export(string path)
+        {
+            Exporter.Export(Model, Propagator, path, config, SampleSet.ExportOptions);
+        }
         public void Run()
         {
             //Resolution status = Propagator.Status;
