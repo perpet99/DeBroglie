@@ -192,11 +192,11 @@ namespace DeBroglie.Win
                 {
                     status = Propagator.Clear();
                 }
-                if (status == Resolution.Contradiction)
-                {
-                    System.Console.WriteLine($"Found contradiction in initial conditions, retrying");
-                    continue;
-                }
+                //if (status == Resolution.Contradiction)
+                //{
+                //    System.Console.WriteLine($"Found contradiction in initial conditions, retrying");
+                //    continue;
+                //}
                 //if (config.Animate)
                 if (true)
                 {

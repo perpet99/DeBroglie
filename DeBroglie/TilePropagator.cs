@@ -231,6 +231,10 @@ namespace DeBroglie
         /// </summary>
         public Resolution Status => wavePropagator.Status;
 
+        public void SetStatus(Resolution s)
+        {
+            wavePropagator.status = s;
+        }
         /// <summary>
         /// This is incremented each time it is necessary to backtrack
         /// a tile while generating results.
@@ -561,6 +565,15 @@ namespace DeBroglie
                 }
                 return tile;
             }, topology);
+        }
+
+        public Tile GetTile( int index)
+        {
+
+            var pattern = GetDecidedCell(index);
+
+            return tileModelMapping.PatternsToTilesByOffset[0][pattern];
+
         }
 
         /// <summary>

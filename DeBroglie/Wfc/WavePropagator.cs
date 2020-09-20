@@ -39,7 +39,7 @@ namespace DeBroglie.Wfc
         private bool deferredConstraintsStep;
 
         // The overall status of the propagator, always kept up to date
-        private Resolution status;
+        public Resolution status;
 
         private ITopology topology;
         private int directionsCount;
@@ -167,6 +167,26 @@ namespace DeBroglie.Wfc
         // Returns the only possible value of a cell if there is only one,
         // otherwise returns -1 (multiple possible) or -2 (none possible)
         public int GetDecidedCell(int index)
+        {
+            int decidedPattern = (int)Resolution.Contradiction;
+            for (var pattern = 0; pattern < patternCount; pattern++)
+            {
+                if (wave.Get(index, pattern))
+                {
+                    if (decidedPattern == (int)Resolution.Contradiction)
+                    {
+                        decidedPattern = pattern;
+                    }
+                    else
+                    {
+                        return (int)Resolution.Undecided;
+                    }
+                }
+            }
+            return decidedPattern;
+        }
+
+        public int GetDecidedTile(int index)
         {
             int decidedPattern = (int)Resolution.Contradiction;
             for (var pattern = 0; pattern < patternCount; pattern++)

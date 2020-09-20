@@ -172,7 +172,9 @@ namespace DeBroglie.Win
             //var coordinates = me.Location;
             mDown2 = e.Location;
 
-            textBox1.Text = $"X : {e.Location.X} , Y : {e.Location.Y}";
+            int index = e.Location.X / 16 + e.Location.Y / 16 * 12;
+
+            textBox1.Text = $"INDEX = {index + 1}";
 
             pictureBox2.Invalidate();
 
@@ -205,8 +207,80 @@ namespace DeBroglie.Win
             Rectangle r = new Rectangle(mDown1.X, mDown1.Y, 16, 16);
             e.Graphics.DrawRectangle(Pens.Red, r);
         }
-
         private void pictureBox1_Click(object sender, EventArgs e)
+        {
+            MouseEventArgs me = (MouseEventArgs)e;
+            var pos = me.Location;
+
+            pos.X -= pos.X % 16;
+            pos.Y -= pos.Y % 16;
+
+            int x = pos.X / 16;
+            int y = pos.Y / 16;
+
+            //Pro.Propagator.SeletctPattern(x + y * 20, 1);
+
+            //Pro.Export("test.png");
+
+            //pictureBox1.Image = FromImage("test.png");
+            //pictureBox1.Update();
+
+
+
+            //var pro = ItemsProcessor.Process("grass/map2.json");
+
+            //pro.ProcessItem();
+
+
+            //pro.Propagator.Select()
+            Pro.Propagator.Select(x , y , 0 ,new Tile( SelectedPatten));
+
+            for (int sy = 0; sy < 5; sy++)
+            {
+                for (int sx = 0; sx < 5; sx++)
+                {
+                    if (sx == 0 || sx == 4 || sy == 0 || sy == 4)
+                    {
+                        int i = sx + x - 2 + (sy + y - 2) * 20;
+
+                        var pattern = Pro.Propagator.GetTile(i);
+                        //pro.Propagator.SeletctPattern(sx + sy * 5, pattern);
+                        System.Diagnostics.Debug.WriteLine($"I : {i} ,pattern : {pattern}");
+                        //Pro.Propagator.Select(sx + 1, sy + 1, 0, pattern);
+
+                    }
+                    else if (sx == 3 && sy == 3)
+                    {
+
+                    }
+                    else
+                    {
+                        //model.Clear(sx, sy);
+                    }
+                }
+            }
+
+            //pro.Propagator.SetStatus(Resolution.Undecided);
+
+            Pro.Run2((String path) =>
+
+            {
+                pictureBox1.Image = FromImage(path);
+                pictureBox1.Update();
+
+
+                //BeginInvoke((Action)(() =>
+                //{
+                //    //button1.Text = path;
+
+                //}));
+
+            });
+
+
+
+        }
+        private void pictureBox1_Click2(object sender, EventArgs e)
         {
             MouseEventArgs me = (MouseEventArgs)e;
             var pos = me.Location;
@@ -232,7 +306,7 @@ namespace DeBroglie.Win
 
 
             //pro.Propagator.Select()
-            pro.Propagator.Select(2 , 2 , 0 ,new Tile( SelectedPatten));
+            //pro.Propagator.Select(3 , 3 , 0 ,new Tile( SelectedPatten));
 
             for (int sy = 0; sy < 5; sy++)
             {
@@ -242,12 +316,13 @@ namespace DeBroglie.Win
                     {
                         int i = sx + x - 2 + (sy + y - 2) * 20;
 
-                        var pattern = Pro.Propagator.GetDecidedCell(i);
+                        var pattern = Pro.Propagator.GetTile(i);
                         //pro.Propagator.SeletctPattern(sx + sy * 5, pattern);
-                        pro.Propagator.Select(sx, sy, 0, new Tile(pattern));
+                        System.Diagnostics.Debug.WriteLine($"I : {i} ,pattern : {pattern}");
+                        pro.Propagator.Select(sx+1, sy+1, 0, pattern);
 
                     }
-                    else if (sx == 2 && sy == 2)
+                    else if (sx == 3 && sy == 3)
                     {
                         
                     }
@@ -257,6 +332,8 @@ namespace DeBroglie.Win
                     }
                 }
             }
+
+            pro.Propagator.SetStatus( Resolution.Undecided);
 
             pro.Run2((String path) =>
 
